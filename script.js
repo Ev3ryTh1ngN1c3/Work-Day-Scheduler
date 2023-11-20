@@ -1,33 +1,69 @@
-var today = moment().format("dddd, mmmm do yyyy");
-var now = moment().format("H A");
-$("#currentDay").text(today);
-//entries for every hour//
-var workDay = [
-  { time: "9 AM", 
+var now = new Date();
+
+var hour=now.getHours();
+var today=now.getDay();
+let days={
+  0:"Sunday",
+  1:"Monday",
+  2:"Tuesday",
+  3:"Wednesday",
+  4:"Thursday",
+  5:"Friday",
+  6:"Saturday"
+}
+
+$("#currentDay").text(days[today]);
+
+
+var workDay = {
+  "0":{ time: 9,id:9, 
       event: "" },
-  { time: "10 AM", 
+  "1":{ time: 10, id:10,
       event: "" },
-  { time: "11 AM", 
+  "2":{ time: 11, id:11,
       event: "" },
-  { time: "12 PM", 
+  "3":{ time: 12, id:12,
       event: "" },
-  { time: "1 PM", 
+  "4":{ time: 13, id:1,
       event: "" },
-  { time: "2 PM", 
+  "5":{ time: 14, id:2,
       event: "" },
-  { time: "3 PM", 
+  "6":{ time: 15, id:3,
       event: "" },
-  { time: "4 PM", 
+  "7":{ time: 16, id:4,
       event: "" },
-  { time: "5 PM", 
+  "8":{ time: 17, id:5,
       event: "" },
-];
+};
+let loadData=window.localStorage.getItem("saving")
+if(loadData){
+  let parsedData=JSON.parse(loadData);
+  workDay =parsedData;
+
+}
 
 
 
+for(let key in workDay){
+  let block=workDay[key]
+  let elId="#hour-"+block.id+" textarea"
+  let btnId="#hour-"+block.id+" button"
+  if(hour>block.time){ ///block in the past
+    $(elId).removeClass("future").removeClass("present").addClass("past");
+  }
+  if(hour==block.time){ ///block in the past
+    $(elId).removeClass("future").removeClass("past").addClass("present");
+  }
+   if(hour<block.time){ ///block in the past
+    $(elId).removeClass("past").removeClass("present").addClass("future");
+  }
 
-
-
+  $(elId).val(block.event)
+  $(btnId).click(function(){
+    workDay[key].event=$(elId).val()
+    window.localStorage.setItem("saving",JSON.stringify(workDay))
+  })
+}
 
 
 
